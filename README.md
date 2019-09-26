@@ -1,6 +1,5 @@
 # Tmpr PHP Assessment
-
-TODO: Write a project description
+We want to see a Retention curve chart that shows how far a group of users (weekly cohorts) has progressed through the Onboarding Flow.
 
 ## Installation
 
