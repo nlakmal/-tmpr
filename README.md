@@ -3,28 +3,14 @@ We want to see a Retention curve chart that shows how far a group of users (week
 
 ## Installation
 
-TODO: Describe the installation process
+1. Git clone https://github.com/nlakmal/tmpr.git
+2. Checkout master branch
+3. Go to the <DOC_PATH>/tmpr in your command promt 
+4. Run php -S localhost:8000 to start the server
+5. Open http://localhost:8000/ in your browser.
 
-## Usage
+## Testing
 
-TODO: Write usage instructions
+1. Go the <DOC_PATH>/tmpr/api/vendor/bin folder in your command promt
+2. Run phpunit  ..\..\tests command
 
-## Contributing
-
-1. Fork it!
-2. Create your feature branch: `git checkout -b my-new-feature`
-3. Commit your changes: `git commit -am 'Add some feature'`
-4. Push to the branch: `git push origin my-new-feature`
-5. Submit a pull request :D
-
-## History
-
-TODO: Write history
-
-## Credits
-
-TODO: Write credits
-
-## License
-
-TODO: Write license
