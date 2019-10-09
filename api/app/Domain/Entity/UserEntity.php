@@ -1,6 +1,8 @@
 <?php
 
-class UserModel
+namespace Tmpr\Chart\Domain\Entity;
+
+class UserEntity extends AbstractEntity
     {
         private $userId;
         private $created;

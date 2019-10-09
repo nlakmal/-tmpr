@@ -1,55 +1,55 @@
 <?php
 
-require_once 'DataProcessorInterface.php';
+namespace Tmpr\Chart\Domain\Factory\Chart;
 
-    class WeeklyDataProcessor implements DataProcessorInterface
+use Tmpr\Chart\Domain\Repository\CustomerDataRepositoryInterface;
+
+    class WeeklyCohortsRetentionChart implements RetentionChartInterface
     {
-        private $dataService;
+        private $customerRepository;
         private $onboardingStepsPerentage=[0,20,40,50,70,90,99,100];
         private $userCountForOnboardingStepsPerWeek=[];
         private $onbordingSummary=[];
 
-        public function __construct(DataService $dataService)
+        public function __construct(CustomerDataRepositoryInterface $customerRepository)
         {
-            $this->dataService=$dataService;
+            $this->customerRepository=$customerRepository;
             $this->refershUserCountForOnboardingStepsArray();
         }
-        public function process()
+        public function chart(): array
         {
             try {
-                $data = $this->dataService->getAllOnbordingUsers();
+                $customerEntitySet = $this->customerRepository->getAll();
                 $weekStartDate = '';
                 $isStartWeek = true;
-                foreach ($data as $user) {
-                    if (!$user instanceof UserModel) {
-                        throw new Exception("Invalid data model");
+                foreach ($customerEntitySet as $customerEntity) {
+                    if ($isStartWeek) {
+                        $weekStartDate = $customerEntity->getCreated();
+                        $isStartWeek = false;
                     }
-                        if ($isStartWeek) {
-                            $weekStartDate = $user->getCreated();
-                            $isStartWeek = false;
-                        }
-                        $diff = date_diff(date_create($weekStartDate), date_create($user->getCreated()));
-                        if ($diff->format("%R") == '-') {
-                            throw new Exception("Invalid date_diff");
-                        }
-                        if ((int)$diff->format("%a") == 7) {
-                            $this->prepareDataSet($weekStartDate);
-                            $isStartWeek = true;
-                        }
-                        if(!$isStartWeek){
-                            $this->countUsersForOnbordingPerentage($user->getOnbordingPerentage());
-                        }
+                    $diff = date_diff(date_create($weekStartDate), date_create($customerEntity->getCreated()));
+                    if ($diff->format("%R") == '-') {
+                        throw new \Exception("Invalid date_diff");
+                    }
+                    if ((int)$diff->format("%a") == 7) {
+                        $this->prepareDataSet($weekStartDate);
+                        $isStartWeek = true;
+                    }
+                    if(!$isStartWeek){
+                        $this->countUsersForOnbordingPerentage($customerEntity->getOnbordingPerentage());
+                    }
 
                 }
                 if(!$isStartWeek) {
                     $this->prepareDataSet($weekStartDate);
                 }
                 return $this->onbordingSummary;
-            } catch(Exception $e) {
-             throw new Exception("failed to process");
+            } catch(\Exception $e) {
+                throw new \Exception("failed to process");
             }
         }
-        private function prepareDataSet($weekStartDate)
+
+        private function prepareDataSet(string $weekStartDate):bool
         {
             $onbordingWeek = [];
             $onbordingWeek['name'] = $weekStartDate;
@@ -59,14 +59,15 @@ require_once 'DataProcessorInterface.php';
             array_push($this->onbordingSummary, $onbordingWeek);
             return true;
         }
-        private function countUsersForOnbordingPerentage($customerCurrentOnbordingPerentage)
+
+        private function countUsersForOnbordingPerentage(int $customerCurrentOnbordingPerentage):bool
         {
             if (!(min($this->onboardingStepsPerentage)<=$customerCurrentOnbordingPerentage) || !(max($this->onboardingStepsPerentage)>=$customerCurrentOnbordingPerentage)) {
-                throw new Exception("Invalid onbording precentage value");
+                throw new \Exception("Invalid onbording precentage value");
             }
             for ($index = 0; $index < count($this->onboardingStepsPerentage)-1; $index++) {
                 if(!isset($this->onboardingStepsPerentage[$index]) || !isset($this->onboardingStepsPerentage[$index + 1])){
-                    throw new Exception("invalid array");
+                    throw new \Exception("invalid array");
                 }
                 if ($this->onboardingStepsPerentage[$index] == $customerCurrentOnbordingPerentage || $customerCurrentOnbordingPerentage < $this->onboardingStepsPerentage[$index + 1] ) {
                     $this->userCountForOnboardingStepsPerWeek[$index] +=1;
@@ -78,17 +79,19 @@ require_once 'DataProcessorInterface.php';
             }
             return true;
         }
-        private function calculateUserPerentageAgainstOnbordingSteps()
+
+        private function calculateUserPerentageAgainstOnbordingSteps():bool
         {
             $totalUserCountPerWeek=array_sum($this->userCountForOnboardingStepsPerWeek);
-             array_walk($this->userCountForOnboardingStepsPerWeek, function(&$userCountPerStep) use($totalUserCountPerWeek)
-             {
-                 $userCountPerStep = round(((int)$userCountPerStep/$totalUserCountPerWeek)*100);
-             }
-             );
+            array_walk($this->userCountForOnboardingStepsPerWeek, function(&$userCountPerStep) use($totalUserCountPerWeek)
+            {
+                $userCountPerStep = round(((int)$userCountPerStep/$totalUserCountPerWeek)*100);
+            }
+            );
             $this->userCountForOnboardingStepsPerWeek[0]=100;
             return true;
         }
+
         private function refershUserCountForOnboardingStepsArray()
         {
             $this->userCountForOnboardingStepsPerWeek=array_fill(0, 8, 0);

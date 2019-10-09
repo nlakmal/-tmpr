@@ -1,8 +1,8 @@
 <?php
 
-require_once 'ResponseInterface.php';
+namespace Tmpr\Chart\Http;
 
-    class JsonResponse implements ResponseInterface{
+class JsonResponse implements ResponseInterface{
         /**
          * @param int $code
          * @param array $headers

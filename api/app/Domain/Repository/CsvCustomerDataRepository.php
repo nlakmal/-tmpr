@@ -1,9 +1,9 @@
 <?php
+namespace Tmpr\Chart\Domain\Repository;
 
-require_once 'DataRepositoryInterface.php';
-require_once 'D:/xampp/htdocs/tmpr/api/app/model/UserModel.php';
+use Tmpr\Chart\Domain\Entity\UserEntity;
 
-    class CsvDataRepository implements DataRepositoryInterface
+    class CsvCustomerDataRepository implements CustomerDataRepositoryInterface
     {
         private $file;
 
@@ -11,18 +11,22 @@ require_once 'D:/xampp/htdocs/tmpr/api/app/model/UserModel.php';
         {
             $this->file=$file;
         }
-        public function getOnboardingData()
+
+        /**
+         * @return array
+         * @throws \Exception
+         */
+        public function getAll():array
         {
             $fp = @fopen( $this->file, 'r');
             if(!$fp){
-                var_dump(8);
-                throw new Exception("invalid file path");
+                throw new \Exception("invalid file path");
             }
             $users = array();
             $rowCount=0;
             while(!feof($fp) && ($line = fgetcsv($fp)) !== false) {
                 if($rowCount!=0 && isset($line[0])){
-                    $userModel=new UserModel();
+                    $userModel=new UserEntity();
                     $row=explode(';',($line[0]));
                     $userModel->setUserId(isset($row[0])?$row[0]:null);
                     $userModel->setCreated(isset($row[1])?$row[1]:null);
