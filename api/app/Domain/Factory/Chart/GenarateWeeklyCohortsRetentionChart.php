@@ -3,7 +3,7 @@
 namespace Tmpr\Chart\Domain\Factory\Chart;
 use Tmpr\Chart\Domain\Repository\CustomerDataRepositoryInterface;
 
-    class WeeklyCohortsRetentionGenarateChart implements GenarateChartInterface
+    class GenarateWeeklyCohortsRetentionChart implements GenarateChartInterface
     {
         private $customerdataRepository;
 
