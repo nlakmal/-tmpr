@@ -20,6 +20,10 @@ class ComposerStaticInit7bb92edc4e66f3cf29986d6cd6aee8c9
         array (
             'Webmozart\\Assert\\' => 17,
         ),
+        'T' => 
+        array (
+            'Tmpr\\Chart\\' => 11,
+        ),
         'S' => 
         array (
             'Symfony\\Polyfill\\Ctype\\' => 23,
@@ -45,6 +49,10 @@ class ComposerStaticInit7bb92edc4e66f3cf29986d6cd6aee8c9
         'Webmozart\\Assert\\' => 
         array (
             0 => __DIR__ . '/..' . '/webmozart/assert/src',
+        ),
+        'Tmpr\\Chart\\' => 
+        array (
+            0 => __DIR__ . '/../..' . '/app',
         ),
         'Symfony\\Polyfill\\Ctype\\' => 
         array (

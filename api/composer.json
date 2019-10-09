@@ -1,4 +1,10 @@
+
 {
+    "autoload": {
+        "psr-4": {
+            "Tmpr\\Chart\\": ["app/"]
+        }
+    },
     "require-dev": {
         "phpunit/phpunit": "8"
     }

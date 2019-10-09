@@ -1,22 +1,15 @@
 <?php
-
-require_once '../config/Request.php';
-require_once '../app/response/JsonResponse.php';
-require_once '../app/repository/CsvDataRepository.php';
-require_once '../app/service/DataService.php';
-require_once '../app/processor/WeeklyDataProcessor.php';
-require_once '../app/controller/ApiController.php';
+define('ROOTPATH', $_SERVER['DOCUMENT_ROOT']);
+include('../vendor/autoload.php');
+use Tmpr\Chart\Http\Request;
+use Tmpr\Chart\Controller\Chart\WeeklyRetentionChartController;
+use Tmpr\Chart\Http\JsonResponse;
 
 $request = new Request($_SERVER);
-$response=new JsonResponse();
 
 if ($request->isMethod('get')) {
     if ($request->isAction('/api/weekly')) {
-        $dataService = new DataService(new CsvDataRepository('../resource/csv/export.csv'));
-        $dataProcessor=new WeeklyDataProcessor($dataService);
-        $controller=new ApiController($dataProcessor,$response);
-        $controller->index();
+        $WeeklyRetentionChartController=new WeeklyRetentionChartController(new JsonResponse());
+        $WeeklyRetentionChartController->render();
     }
-    $response->send(501, ['error'=>'unknown action: ' . $request->getUri()]);
 }
-$response->send(500, ['error'=>'Unknown error']);
