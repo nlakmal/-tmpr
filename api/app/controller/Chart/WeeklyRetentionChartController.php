@@ -14,12 +14,13 @@ class WeeklyRetentionChartController
     {
         $this->response=$response;
     }
+
     public function render()
     {
         try {
             $chart=new Chart(new WeeklyCohortsRetentionGenarateChart(new CsvCustomerDataRepository(ROOTPATH.'/api/resource/csv/export.csv')));
             $weeklyRetention=$chart->createRetentionCharts();
-            $chartData=$weeklyRetention->chart();
+            $chartData=$weeklyRetention->makeChart();
             if(empty($chartData)){
                 $this->response->send(400, ['error'=>'Failed to generate weekly data set']);
             }

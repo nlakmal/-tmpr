@@ -16,7 +16,12 @@ use Tmpr\Chart\Domain\Repository\CustomerDataRepositoryInterface;
             $this->customerRepository=$customerRepository;
             $this->refershUserCountForOnboardingStepsArray();
         }
-        public function chart(): array
+
+        /**
+         * @return array
+         * @throws \Exception
+         */
+        public function makeChart(): array
         {
             try {
                 $customerEntitySet = $this->customerRepository->getAll();
@@ -49,6 +54,10 @@ use Tmpr\Chart\Domain\Repository\CustomerDataRepositoryInterface;
             }
         }
 
+        /**
+         * @param string $weekStartDate
+         * @return bool
+         */
         private function prepareDataSet(string $weekStartDate):bool
         {
             $onbordingWeek = [];
@@ -60,6 +69,11 @@ use Tmpr\Chart\Domain\Repository\CustomerDataRepositoryInterface;
             return true;
         }
 
+        /**
+         * @param int $customerCurrentOnbordingPerentage
+         * @return bool
+         * @throws \Exception
+         */
         private function countUsersForOnbordingPerentage(int $customerCurrentOnbordingPerentage):bool
         {
             if (!(min($this->onboardingStepsPerentage)<=$customerCurrentOnbordingPerentage) || !(max($this->onboardingStepsPerentage)>=$customerCurrentOnbordingPerentage)) {
@@ -80,6 +94,9 @@ use Tmpr\Chart\Domain\Repository\CustomerDataRepositoryInterface;
             return true;
         }
 
+        /**
+         * @return bool
+         */
         private function calculateUserPerentageAgainstOnbordingSteps():bool
         {
             $totalUserCountPerWeek=array_sum($this->userCountForOnboardingStepsPerWeek);

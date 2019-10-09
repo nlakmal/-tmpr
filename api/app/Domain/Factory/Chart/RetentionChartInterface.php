@@ -4,7 +4,10 @@ namespace Tmpr\Chart\Domain\Factory\Chart;
 
 interface  RetentionChartInterface
 {
-    public function chart();
+    /**
+     * @return mixed
+     */
+    public function makeChart();
 }
 
 
