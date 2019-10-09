@@ -83,12 +83,11 @@ use Tmpr\Chart\Domain\Repository\CustomerDataRepositoryInterface;
                 if(!isset($this->onboardingStepsPerentage[$index]) || !isset($this->onboardingStepsPerentage[$index + 1])){
                     throw new \Exception("invalid array");
                 }
-                if ($this->onboardingStepsPerentage[$index] == $customerCurrentOnbordingPerentage || $customerCurrentOnbordingPerentage < $this->onboardingStepsPerentage[$index + 1] ) {
+                if($index==0){
                     $this->userCountForOnboardingStepsPerWeek[$index] +=1;
-                    return true;
-                } else if($customerCurrentOnbordingPerentage == $this->onboardingStepsPerentage[$index + 1]){
+                }
+                if ($this->onboardingStepsPerentage[$index] < $customerCurrentOnbordingPerentage && $customerCurrentOnbordingPerentage <= 100 ) {
                     $this->userCountForOnboardingStepsPerWeek[$index+1] +=1;
-                    return true;
                 }
             }
             return true;
@@ -99,7 +98,7 @@ use Tmpr\Chart\Domain\Repository\CustomerDataRepositoryInterface;
          */
         private function calculateUserPerentageAgainstOnbordingSteps():bool
         {
-            $totalUserCountPerWeek=array_sum($this->userCountForOnboardingStepsPerWeek);
+            $totalUserCountPerWeek=$this->userCountForOnboardingStepsPerWeek[0];
             array_walk($this->userCountForOnboardingStepsPerWeek, function(&$userCountPerStep) use($totalUserCountPerWeek)
             {
                 $userCountPerStep = round(((int)$userCountPerStep/$totalUserCountPerWeek)*100);
